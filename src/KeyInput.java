@@ -3,28 +3,41 @@ import java.awt.event.KeyEvent;
 
 public class KeyInput extends KeyAdapter {
     Typewriter tw;
+    Handler handler;
+    StoryTeller st;
 
-    public KeyInput(Typewriter tw) {
+    public KeyInput(Typewriter tw, Handler handler) {
 
         this.tw = tw;
-
+        this.handler = handler;
+        st = new StoryTeller();
     }
 
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_SPACE) {
-            System.out.println("Space Pressed!");
-            tw.setText("This is sample text");
+
+            if (!tw.isTyping())
+                tw.setText(st.getNextPara());
+            else
+                tw.skipTypeWriter();
         }
 
         if (key == KeyEvent.VK_F) {
-            tw.setWaitingForInput(false);
             tw.clearText();
         }
 
         if (key == KeyEvent.VK_S) {
-            tw.setText("A Second paragraph here, for testing and such. This one is a bit longer.");
+            tw.wrapText();
+        }
+
+        if (key == KeyEvent.VK_A) {
+            //tw.setText("Let's try one more. Just to see how it handles multiple inputs at once.");
+        }
+
+        if (key == KeyEvent.VK_Y) {
+            handler.removeHealth(1);
         }
     }
 

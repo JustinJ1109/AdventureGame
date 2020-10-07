@@ -4,9 +4,11 @@ import java.awt.*;
 public class Window {
 
     private Game game;
+    private Typewriter tw;
 
     public Window(int w, int h, String title, Game game) {
         this.game = game;
+        this.tw = tw;
 
         Dimension windowSize = new Dimension(w, h);
 
@@ -22,6 +24,7 @@ public class Window {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setFocusable(true);
         frame.requestFocus();
+
 
         game.start();
     }
