@@ -1,3 +1,5 @@
+import org.davidmoten.text.utils.WordWrap;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
@@ -7,44 +9,62 @@ import java.util.Scanner;
 
 public class Typewriter {
 
+    /** Used to hold the current index to be iterated through **/
     private static int index;
     private static int listIndex;
+
+    /** Holds the current text to be assigned to specified arrayList to be displayed **/
     private static String curText;
+
+    /** Holds the entire text to be broken into arrayList parts**/
     private static String text;
-    private String tempText;
 
-    private final int MAX_LINE_LENGTH = 50;
-    private final int BUFFER_LINE_SIZE = 5;
-    private final int V_LINE_SPACING = 5;
+    /** boolean value of whether text was skipped or not **/
+    private boolean skipped = false;
 
-    private Scanner scnr;
+    /** Sets the horizontal bounds of the text **/
+    private final int MAX_LINE_LENGTH = 40;
 
+    /** Spacing distance offset between lines of text **/
+    private final int V_LINE_SPACING = 15;
+
+    /** Holds all the text that is to be typed **/
     private ArrayList<String> wrappedText;
+
+    /** Gets iterated through char by char and is displayed via render **/
+    private ArrayList<String> curWrappedText;
 
     public Typewriter() {
         curText = "";
+
         index = 0;
         listIndex = 0;
+
         text = "";
-        tempText = "";
         wrappedText = new ArrayList<>(0);
+        curWrappedText = new ArrayList<>(0);
     }
 
     public Typewriter(String text) {
         curText = "";
+
         index = 0;
         listIndex = 0;
+
         Typewriter.text = text;
         wrappedText = new ArrayList<>(0);
-        tempText = "";
+        curWrappedText = new ArrayList<>(0);
+
     }
 
+    /**
+     * Responsible for organizing the text into separate arrayList objects
+     * to be iterated through later.
+     */
     public void wrapText() {
-        scnr = new Scanner(text);
+        Scanner scnr = new Scanner(text);
 
         String temp = "";
-        int lineLength = 0;
-
 
         while (scnr.hasNext()) {
             if (MAX_LINE_LENGTH - (temp += scnr.next() + " ").length() < 0) { // over bounds
@@ -55,92 +75,109 @@ public class Typewriter {
         wrappedText.add(temp.trim());
 
         for (int j = 0; j < wrappedText.size(); j++)
-            System.out.println("lists: " + wrappedText.get(j).trim());
+            curWrappedText.add(""); // add how many lists wrappedText has
+
     }
 
+    /**
+     * Loops through all of the currently applied text lines and displays them on screen
+     *
+     * @param g
+     */
     public void render(Graphics g) {
 
         g.setColor(Color.white);
-        g.drawString(getCurText(), 40, 60);
 
-    }
+        for (int i = 0; i < curWrappedText.size(); i++) { // for every line of text, render
 
-    private int getTextDrawHeight() {
-
-        if (getCurrentTextIndex() == MAX_LINE_LENGTH) {
-
+            g.drawString(curWrappedText.get(i), 40, 60 + (i * V_LINE_SPACING));
         }
-
-
-        return 0;
     }
 
-    private int getCurrentTextIndex() {
-
-
-
-        return 0;
-    }
-
+    /**
+     * Iterates through each arrayList object and adds them one by one to the displayed list
+     * to give a typewriter effect
+     */
     public void tick() {
-//
-//        if (index + 1 <= text.length()) {
-//            curText += text.charAt(index);
-//            index++;
-//        }
 
-//        if (!curText.equals(text))
-//            for (int i = 0; i < wrappedText.size(); i++) { // for every break in text
-//                for (int l = 0; l < wrappedText.get(i).length(); l++) { // for every letter in that break
-//                    curText += wrappedText.get(i).charAt(l); // add the char at the index to curText
-//                }
-//            }
 
-        if (wrappedText.size() > 0 && listIndex < wrappedText.size()) {
-            if (tempText.equals(wrappedText.get(listIndex))) {
-                listIndex++;
+        if (!skipped && wrappedText.size() > 0 && listIndex < curWrappedText.size()) { // there is text
+            if (curText.equals(wrappedText.get(listIndex))) { // is the current temp string equal to the one it drew from
+                curWrappedText.set(listIndex, curText);
+
+                listIndex++; // work on next list
+
                 index = 0;
-                tempText = "";
+                curText = "";
             }
 
-            if (listIndex < wrappedText.size()) {
-                tempText += wrappedText.get(listIndex).charAt(index);
-                curText += wrappedText.get(listIndex).charAt(index);
-                index++;
-            }
+            if (listIndex < curWrappedText.size())
+                if (wrappedText.get(listIndex).length() > index) {
+                    curText += wrappedText.get(listIndex).charAt(index);
+                    curWrappedText.set(listIndex, curText);
+                    index++;
+                }
         }
     }
 
-
-
-
-
-    public String getCurText() {
-        return curText;
-    }
-
+    /**
+     * Sets the text that should be displayed. Also clears all previous text to
+     * prevent overlap
+     *
+     * @param text paragraph to be displayed
+     */
     public void setText(String text) {
         if (!isTyping()) {
             clearText();
             Typewriter.text = text;
-            wrapText();
+           wrapText();
         }
     }
 
+    /**
+     * Clears all current settings and displays
+     */
     public void clearText() {
         curText = "";
         text = "";
         index = 0;
+        listIndex = 0;
+        skipped = false;
+
+        wrappedText.clear();
+        curWrappedText.clear();
+
     }
 
+    /**
+     * Boolean that determines if the class is currently typing something out.
+     *
+     * @return
+     */
     public boolean isTyping() {
-        if (!curText.equals(text))
+        if (!wrappedText.equals(curWrappedText))
             return true;
         return false;
     }
 
+    /**
+     * When called, skips the animation and automatically sets all arrayLists
+     * to the full text
+     */
     public void skipTypeWriter() {
-        curText = text;
-        index = text.length();
+
+        if (isTyping()) {
+            int i = 0;
+            while (i < curWrappedText.size()) {
+                curWrappedText.set(i, wrappedText.get(i));
+                i++;
+            }
+            index = curWrappedText.get(i - 1).length();
+            listIndex = curWrappedText.size();
+            curText = wrappedText.get(i - 1);
+
+            skipped = true;
+
+        }
     }
 }

@@ -29,7 +29,7 @@ public class KeyInput extends KeyAdapter {
         }
 
         if (key == KeyEvent.VK_S) {
-            tw.wrapText();
+            //tw.wrapText();
         }
 
         if (key == KeyEvent.VK_A) {

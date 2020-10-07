@@ -1,3 +1,5 @@
+import java.awt.*;
+
 public class Handler {
 
     private int hp;
@@ -24,5 +26,13 @@ public class Handler {
             hp -= amt;
             System.out.println("Health: "+ hp);
         }
+    }
+
+    public void render(Graphics g) {
+
+    }
+
+    public void tick() {
+
     }
 }

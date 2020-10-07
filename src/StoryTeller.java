@@ -7,7 +7,7 @@ public class StoryTeller {
     public StoryTeller() {
         index = 0;
         paragraphs = new String[] {"This one is going to be quite a long one though. To be able to test the text wrapping, I will need one of sizeable length.",
-                "This is the first sentence", "Here, we have the second one!",
+                "This is the first sentence.", "Here, we have the second one!",
         };
     }
 

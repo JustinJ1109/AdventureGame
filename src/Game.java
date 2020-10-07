@@ -16,7 +16,7 @@ public class Game extends Canvas implements Runnable {
 
 
     private static int tickCount = 0;
-    private static int tickMax = 200;
+    private static int tickMax = 150;
 
     public void init() {
         tw = new Typewriter();
@@ -101,6 +101,7 @@ public class Game extends Canvas implements Runnable {
         ui.render(g);
 
         tw.render(g);
+        handler.render(g);
 
         // render all letters in currtext
 
@@ -116,6 +117,8 @@ public class Game extends Canvas implements Runnable {
             tickCount = 0;
         }
         tickCount++;
+
+        handler.tick();
     }
 
     public static void main(String[] args) {
