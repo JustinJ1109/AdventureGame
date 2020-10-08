@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.sql.ClientInfoStatus;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -12,6 +13,10 @@ public class Typewriter {
     /** Used to hold the current index to be iterated through **/
     private static int index;
     private static int listIndex;
+
+    private Game game;
+
+    private int drawX, drawY;
 
     /** Holds the current text to be assigned to specified arrayList to be displayed **/
     private static String curText;
@@ -23,7 +28,7 @@ public class Typewriter {
     private boolean skipped = false;
 
     /** Sets the horizontal bounds of the text **/
-    private final int MAX_LINE_LENGTH = 40;
+    private final int MAX_LINE_LENGTH;
 
     /** Spacing distance offset between lines of text **/
     private final int V_LINE_SPACING = 15;
@@ -34,8 +39,13 @@ public class Typewriter {
     /** Gets iterated through char by char and is displayed via render **/
     private ArrayList<String> curWrappedText;
 
-    public Typewriter() {
+    public Typewriter(Game game) {
+        this.game = game;
         curText = "";
+        MAX_LINE_LENGTH = 70;
+
+        drawX = 64;
+        drawY = 32;
 
         index = 0;
         listIndex = 0;
@@ -45,16 +55,21 @@ public class Typewriter {
         curWrappedText = new ArrayList<>(0);
     }
 
-    public Typewriter(String text) {
+    public Typewriter(Game game, int MAX_LINE_LENGTH) {
+        this.game = game;
         curText = "";
+        this.MAX_LINE_LENGTH = MAX_LINE_LENGTH;
+
+
+        drawX = 64;
+        drawY = 32;
 
         index = 0;
         listIndex = 0;
 
-        Typewriter.text = text;
+        text = "";
         wrappedText = new ArrayList<>(0);
         curWrappedText = new ArrayList<>(0);
-
     }
 
     /**
@@ -84,14 +99,25 @@ public class Typewriter {
      *
      * @param g
      */
-    public void render(Graphics g) {
+    public void render(Graphics g, int x, int y, int width, int height) {
 
         g.setColor(Color.white);
 
         for (int i = 0; i < curWrappedText.size(); i++) { // for every line of text, render
 
-            g.drawString(curWrappedText.get(i), 40, 60 + (i * V_LINE_SPACING));
+            g.drawString(curWrappedText.get(i),
+                    x + 10, (y + height + y) / 2 + (i - 1) * V_LINE_SPACING);
         }
+
+        // X : width + x) / 2 - (wrappedText.get(i).length()) * 3 + 60
+    }
+
+    private int centerX(int index) {
+        return (game.getWidth() / 2) - (wrappedText.get(index).length()) * 3;
+    }
+
+    private int centerY(int index) {
+        return (game.getHeight() / (wrappedText.size()) + game.getHeight() / 2);
     }
 
     /**
@@ -132,6 +158,17 @@ public class Typewriter {
             Typewriter.text = text;
            wrapText();
         }
+    }
+
+    public void setText(String text, int drawX, int drawY) {
+        if (!isTyping()) {
+            clearText();
+            Typewriter.text = text;
+            wrapText();
+        }
+
+        this.drawX = drawX;
+        this.drawY = drawY;
     }
 
     /**

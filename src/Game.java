@@ -19,11 +19,11 @@ public class Game extends Canvas implements Runnable {
     private static int tickMax = 150;
 
     public void init() {
-        tw = new Typewriter();
+        tw = new Typewriter(this);
         handler = new Handler();
 
-        addKeyListener(new KeyInput(tw, handler));
-        ui = new UI(handler);
+        addKeyListener(new KeyInput(tw, handler, this));
+        ui = new UI(handler, this);
 
     }
 
@@ -98,9 +98,11 @@ public class Game extends Canvas implements Runnable {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, WIDTH, HEIGHT);
 
+        g.setColor(Color.RED);
+
         ui.render(g);
 
-        tw.render(g);
+        tw.render(g, ui.getTextBoxX(), ui.getTextBoxY(), ui.getTextBoxWidth(), ui.getTextBoxHeight());
         handler.render(g);
 
         // render all letters in currtext
@@ -119,6 +121,14 @@ public class Game extends Canvas implements Runnable {
         tickCount++;
 
         handler.tick();
+    }
+
+    public int getWidth() {
+        return WIDTH;
+    }
+
+    public int getHeight() {
+        return HEIGHT;
     }
 
     public static void main(String[] args) {

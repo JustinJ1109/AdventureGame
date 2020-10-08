@@ -5,11 +5,13 @@ public class KeyInput extends KeyAdapter {
     Typewriter tw;
     Handler handler;
     StoryTeller st;
+    Game game;
 
-    public KeyInput(Typewriter tw, Handler handler) {
+    public KeyInput(Typewriter tw, Handler handler, Game game) {
 
         this.tw = tw;
         this.handler = handler;
+        this.game = game;
         st = new StoryTeller();
     }
 
@@ -19,7 +21,7 @@ public class KeyInput extends KeyAdapter {
         if (key == KeyEvent.VK_SPACE) {
 
             if (!tw.isTyping())
-                tw.setText(st.getNextPara());
+                tw.setText(st.getNextPara(), game.getWidth() / 3, game.getHeight() / 3 + game.getHeight() / 2);
             else
                 tw.skipTypeWriter();
         }
