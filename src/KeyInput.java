@@ -21,7 +21,7 @@ public class KeyInput extends KeyAdapter {
         if (key == KeyEvent.VK_SPACE) {
 
             if (!tw.isTyping())
-                tw.setText(st.getNextPara(), game.getWidth() / 3, game.getHeight() / 3 + game.getHeight() / 2);
+                tw.setText(st.getNextPara());
             else
                 tw.skipTypeWriter();
         }

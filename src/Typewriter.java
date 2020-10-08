@@ -16,8 +16,6 @@ public class Typewriter {
 
     private Game game;
 
-    private int drawX, drawY;
-
     /** Holds the current text to be assigned to specified arrayList to be displayed **/
     private static String curText;
 
@@ -44,8 +42,6 @@ public class Typewriter {
         curText = "";
         MAX_LINE_LENGTH = 70;
 
-        drawX = 64;
-        drawY = 32;
 
         index = 0;
         listIndex = 0;
@@ -60,9 +56,6 @@ public class Typewriter {
         curText = "";
         this.MAX_LINE_LENGTH = MAX_LINE_LENGTH;
 
-
-        drawX = 64;
-        drawY = 32;
 
         index = 0;
         listIndex = 0;
@@ -158,17 +151,6 @@ public class Typewriter {
             Typewriter.text = text;
            wrapText();
         }
-    }
-
-    public void setText(String text, int drawX, int drawY) {
-        if (!isTyping()) {
-            clearText();
-            Typewriter.text = text;
-            wrapText();
-        }
-
-        this.drawX = drawX;
-        this.drawY = drawY;
     }
 
     /**
