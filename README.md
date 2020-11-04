@@ -1,2 +1,2 @@
 # AdventureGame
-Small adventure game to practice Java and gamedev
+Small text adventure game to practice Java and gamedev
